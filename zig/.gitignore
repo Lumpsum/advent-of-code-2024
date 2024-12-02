@@ -1,0 +1,33 @@
+# Created by https://www.toptal.com/developers/gitignore/api/zig,git,direnv
+# Edit at https://www.toptal.com/developers/gitignore?templates=zig,git,direnv
+
+### direnv ###
+.direnv
+.envrc
+
+### Git ###
+# Created by git for backups. To disable backups in Git:
+# $ git config --global mergetool.keepBackup false
+*.orig
+
+# Created by git when using merge tools for conflicts
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+
+### zig ###
+# Zig programming language
+
+.zig-cache/
+zig-out/
+build/
+build-*/
+docgen_tmp/
+
+# End of https://www.toptal.com/developers/gitignore/api/zig,git,direnv
+
