@@ -2,6 +2,7 @@ const std = @import("std");
 const ArrayList = std.ArrayList;
 const test_allocator = std.testing.allocator;
 const expect = std.testing.expect;
+const io = @import("io.zig");
 
 const LocationLists = struct {
     list_one: []i32,
@@ -51,16 +52,12 @@ const LocationLists = struct {
         const y = try list_two.toOwnedSlice();
         return LocationLists{ .list_one = x, .list_two = y };
     }
+
+    fn cleanup(Self: LocationLists, allocator: std.mem.Allocator) void {
+        defer allocator.free(Self.list_one);
+        defer allocator.free(Self.list_two);
+    }
 };
-
-fn read_file(allocator: std.mem.Allocator, path: []u8) ![]u8 {
-    const f = try std.fs.cwd().openFile(path, .{});
-    defer f.close();
-
-    const stat = try f.stat();
-    const buffer = try f.readToEndAlloc(allocator, stat.size);
-    return buffer;
-}
 
 fn create_list_hashmap(allocator: std.mem.Allocator, buffer: []u8) !u32 {
     var l = ArrayList(u32).init(allocator);
@@ -69,7 +66,7 @@ fn create_list_hashmap(allocator: std.mem.Allocator, buffer: []u8) !u32 {
     var h = std.AutoHashMap(u32, u32).init(allocator);
     defer h.deinit();
 
-    var lines = std.mem.splitAny(u8, buffer, "\r\n\t");
+    var lines = std.mem.splitAny(u8, buffer, "\r\n");
     while (lines.next()) |line| {
         var characters = std.mem.splitScalar(u8, line, ' ');
         var first = true;
@@ -102,19 +99,18 @@ fn create_list_hashmap(allocator: std.mem.Allocator, buffer: []u8) !u32 {
 }
 
 pub fn solve_part_one(allocator: std.mem.Allocator, path: []u8) !u32 {
-    const buffer = try read_file(allocator, path);
+    const buffer = try io.read_file(allocator, path);
     defer allocator.free(buffer);
 
     const location_list = try LocationLists.create_from_buffer(allocator, buffer);
-    defer allocator.free(location_list.list_one);
-    defer allocator.free(location_list.list_two);
+    defer location_list.cleanup(allocator);
 
     const result = location_list.sum_sorted_list_difference();
     return result;
 }
 
 pub fn solve_part_two(allocator: std.mem.Allocator, path: []u8) !u32 {
-    const buffer = try read_file(allocator, path);
+    const buffer = try io.read_file(allocator, path);
     defer allocator.free(buffer);
 
     return create_list_hashmap(allocator, buffer);

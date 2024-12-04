@@ -1,5 +1,7 @@
 const std = @import("std");
 const location_list = @import("location_list.zig");
+const reports = @import("reports.zig");
+const mull = @import("mull.zig");
 const debug = std.debug.print;
 
 const data_folder = "../data/";
@@ -31,13 +33,31 @@ pub fn solve(day_config: DayConfig) !void {
     }
     const allocator = gpa.allocator();
     const file_path = try std.fmt.allocPrint(allocator, "{s}day{d}/part{d}.txt", .{ data_folder, day_config.day, day_config.part });
+    const test_file_path = try std.fmt.allocPrint(allocator, "{s}day{d}/test.txt", .{ data_folder, day_config.day });
     defer allocator.free(file_path);
+    defer allocator.free(test_file_path);
 
     switch (day_config.day) {
         1 => {
             const r = try switch (day_config.part) {
                 1 => location_list.solve_part_one(allocator, file_path),
                 2 => location_list.solve_part_two(allocator, file_path),
+                else => return ConfigError.InvalidPart,
+            };
+            try print_result(r);
+        },
+        2 => {
+            const r = try switch (day_config.part) {
+                1 => reports.solve_part_one(allocator, file_path),
+                2 => reports.solve_part_two(allocator, file_path),
+                else => return ConfigError.InvalidPart,
+            };
+            try print_result(r);
+        },
+        3 => {
+            const r = try switch (day_config.part) {
+                1 => mull.solve_part_one(allocator, file_path),
+                2 => mull.solve_part_two(allocator, file_path),
                 else => return ConfigError.InvalidPart,
             };
             try print_result(r);
