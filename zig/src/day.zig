@@ -2,6 +2,7 @@ const std = @import("std");
 const location_list = @import("location_list.zig");
 const reports = @import("reports.zig");
 const mull = @import("mull.zig");
+const ceres = @import("ceres.zig");
 const debug = std.debug.print;
 
 const data_folder = "../data/";
@@ -58,6 +59,14 @@ pub fn solve(day_config: DayConfig) !void {
             const r = try switch (day_config.part) {
                 1 => mull.solve_part_one(allocator, file_path),
                 2 => mull.solve_part_two(allocator, file_path),
+                else => return ConfigError.InvalidPart,
+            };
+            try print_result(r);
+        },
+        4 => {
+            const r = try switch (day_config.part) {
+                1 => ceres.solve_part_one(allocator, test_file_path),
+                2 => ceres.solve_part_two(allocator, test_file_path),
                 else => return ConfigError.InvalidPart,
             };
             try print_result(r);
