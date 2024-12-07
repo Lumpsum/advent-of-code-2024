@@ -74,7 +74,7 @@ pub fn solve(day_config: DayConfig) !void {
         },
         5 => {
             const r = try switch (day_config.part) {
-                1 => queue.solve_part_one(allocator, test_file_path),
+                1 => queue.solve_part_one(allocator, file_path),
                 2 => queue.solve_part_two(allocator, test_file_path),
                 else => return ConfigError.InvalidPart,
             };
